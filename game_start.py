@@ -1,10 +1,9 @@
-import pygame
+import pygame, sys
 import numpy as np
 from math import sqrt
-from pygame.locals import*
 pygame.init()
 
-def define_block():
+def define_block():#distriction of drawing
     ox = []
     oy = []
     while True:
@@ -13,7 +12,7 @@ def define_block():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse = pygame.mouse.get_pos()
                 draw = True
-                if mouse[0] < 320 and mouse[0] > 240 and mouse[1] < 40 and mouse[1] > 0:
+                if mouse[0] < button_width*4 and mouse[0] > button_width*3 and mouse[1] < 40 and mouse[1] > 0:
                     draw_block_but.change_color(white)
                     draw_block_but.draw(background, black)
                     return ox, oy
@@ -50,7 +49,7 @@ def define_a_pos_st(ox, oy):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse = pygame.mouse.get_pos()
             
-                if mouse[0] < 320 and mouse[0] > 240 and mouse[1] < 40 and mouse[1] > 0:
+                if mouse[0] < button_width*4 and mouse[0] > button_width*3 and mouse[1] < 40 and mouse[1] > 0:
                         draw_block_but.change_color(white)
                         draw_block_but.draw(background, black)
                         choose_start_but.change_color(white)
@@ -76,11 +75,11 @@ def define_a_pos_end(ox, oy):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse = pygame.mouse.get_pos()
             
-                if mouse[0] < 320 and mouse[0] > 240 and mouse[1] < 40 and mouse[1] > 0:
+                if mouse[0] < button_width*4 and mouse[0] > button_width*3 and mouse[1] < 40 and mouse[1] > 0:
                         draw_block_but.change_color(white)
                         draw_block_but.draw(background, black)
                         choose_end_but.change_color(blue)
-                        choose_end_but.draw(background, black)
+                        choose_end_but.draw(background, white)
                         return x, y
                 else:
                     x = mouse[0]//4
@@ -98,7 +97,7 @@ def define_a_pos_end(ox, oy):
         pygame.display.update()
 
 def draw_rect(x, y, color):
-    pygame.draw.rect(background, color, ((x*4, (y + 10)*4), (4, 4)))
+    pygame.draw.rect(background, color, ((x*4 + 1, (y + 10)*4 + 1), (2, 2)))
     pygame.display.update()
 class button():
     def __init__(self, color, x, y, width, heigh, text=''):
@@ -195,7 +194,7 @@ class Dijkstra:
 
 
     def verify_node(self, node):
-        if node.x >= 100 or node.x <= 0 or node.y >= 100 or node.y <= 0:
+        if node.x >= x_dir_box or node.x <= 0 or node.y >= x_dir_box or node.y <= 0:
             return False
         if self.block[node.x][node.y]:
             return False
@@ -203,10 +202,10 @@ class Dijkstra:
 
 
     def get_block(self):
-        block = [[False for _ in range(100)] for _ in range(100)]
+        block = [[False for _ in range(x_dir_box)] for _ in range(x_dir_box)]
 
-        for x in range(100):
-            for y in range(100):
+        for x in range(x_dir_box):
+            for y in range(x_dir_box):
                 for bx, by in zip(self.ox, self.oy):
                     if sqrt((bx - x)**2 + (by - y)**2) < 0.1:
                         block[x][y] = True
@@ -229,29 +228,32 @@ class Dijkstra:
 
     
     def cal_index(self, p):
-        return p.x + p.y*100
+        return p.x + p.y*x_dir_box
 
+x_dir_box = 150
 
-
-screen, background = start_window((400, 440))
+screen, background = start_window((600, 440))
 white = [255, 255, 255]
 blue = [0, 0, 150]
 black = [0, 0, 0]
 yellow = [255, 255, 0]
 red = [255, 0, 0]
+button_width = 80
 #window set button
-choose_start_but = button(white, 0, 0, 80, 40, text='choose start')
+choose_start_but = button(white, 0, 0, button_width, 40, text='choose start')
 choose_start_but.draw(background, black)
-choose_end_but = button(blue, 80, 0, 80, 40, text='choose end')
+choose_end_but = button(blue, button_width, 0, button_width, 40, text='choose end')
 choose_end_but.draw(background, white)
-draw_block_but = button(white, 160, 0, 80, 40, text='draw block')
+draw_block_but = button(white, button_width*2, 0, button_width, 40, text='draw block')
 draw_block_but.draw(background, black)
-draw_ok_but = button(blue, 240, 0, 80, 40, text='ok')
+draw_ok_but = button(blue, button_width*3, 0, button_width, 40, text='ok')
 draw_ok_but.draw(background, white)
-draw_go_button = button(white, 320, 0, 80, 40, text='go')
+draw_go_button = button(white, button_width*4, 0, button_width, 40, text='go')
 draw_go_button.draw(background, black)
+draw_restart_but = button(blue, button_width*5, 0, button_width, 40, text='restart')
+draw_restart_but.draw(background, white)
 
-for row in range(100):
+for row in range(x_dir_box):
     for col in range(10, 110):
         pygame.draw.rect(background, [25, 80, 50], ((row*4, col*4), (4, 4)))
         pygame.draw.rect(background, [0, 0, 0], ((row*4, col*4), (4, 4)), 1)
@@ -273,19 +275,19 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
-            if mouse[0] < 80 and mouse[0] > 0 and mouse[1] < 40 and mouse[1] > 0:#define start
+            if mouse[0] < button_width and mouse[0] > 0 and mouse[1] < 40 and mouse[1] > 0:#define start
                 sx = None
                 sy = None
                 choose_start_but.change_color(yellow)
                 choose_start_but.draw(background, black)
                 sx, sy = define_a_pos_st(oxx, oyy)
-            if mouse[0] < 160 and mouse[0] > 80 and mouse[1] < 40 and mouse[1] > 0:#define end
+            if mouse[0] < button_width*2 and mouse[0] > button_width and mouse[1] < 40 and mouse[1] > 0:#define end
                 ex = None
                 ey = None
                 choose_end_but.change_color(yellow)
-                choose_end_but.draw(background, black)
+                choose_end_but.draw(background, white)
                 ex, ey = define_a_pos_end(oxx, oyy)
-            if mouse[0] < 240 and mouse[0] > 160 and mouse[1] < 40 and mouse[1] > 0:#draw block
+            if mouse[0] < button_width*3 and mouse[0] > button_width*2 and mouse[1] < 40 and mouse[1] > 0:#draw block
                 draw_block_but.change_color(yellow)
                 draw_block_but.draw(background, black)
                 block = True
@@ -295,9 +297,30 @@ while run:
                 oyy += oy
                 block = False
 
-            if mouse[0] < 400 and mouse[0] > 320 and mouse[1] < 40 and mouse[1] > 0:
+            if mouse[0] < button_width*5 and mouse[0] > button_width*4 and mouse[1] < 40 and mouse[1] > 0:
                 dijkstra = Dijkstra(oxx, [oy - 10 for oy in oyy])
                 rx, ry = dijkstra.planning(sx, sy - 10, ex, ey - 10)
                 for x, y in zip(rx, ry):
                     draw_rect(x, y, yellow)
-    pygame.display.update()
+                pygame.draw.rect(background, yellow, ((sx*4, sy*4), (4, 4)))
+                pygame.draw.rect(background, red, ((ex*4, ey*4), (4, 4)))
+
+            if mouse[0] < button_width*6 and mouse[0] > button_width*5 and mouse[1] < 40 and mouse[1] > 0:
+                oxx = []
+                oyy = []
+                sx = None
+                sy = None
+                ex = None
+                ey = None
+                for row in range(x_dir_box):
+                    for col in range(10, 110):
+                        pygame.draw.rect(background, [25, 80, 50], ((row*4, col*4), (4, 4)))
+                        pygame.draw.rect(background, [0, 0, 0], ((row*4, col*4), (4, 4)), 1)
+
+        if event.type == pygame.QUIT:
+            pygame.quit()
+    try:
+        pygame.display.update()
+
+    except:
+        run = False
