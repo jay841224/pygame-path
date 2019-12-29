@@ -32,7 +32,7 @@ def define_block():#distriction of drawing
                             ox.append(x)
                             oy.append(y)
                     pygame.draw.rect(background, [255, 0, 0], ((4*x, 4*y), (4, 4)))
-                    print(pygame.Rect(((4*x, 4*y), (4, 4))))
+                    #print(pygame.Rect(((4*x, 4*y), (4, 4))))
                     screen.blit(background, (0, 0))
                     pygame.display.update()
                 
@@ -41,6 +41,7 @@ def define_block():#distriction of drawing
 def start_window(size):
     screen = pygame.display.set_mode(size)
     background = pygame.display.set_mode(size)
+    pygame.display.set_caption('search path')
     return screen, background
 
 def define_a_pos_st(ox, oy):
@@ -194,7 +195,7 @@ class Dijkstra:
 
 
     def verify_node(self, node):
-        if node.x >= x_dir_box or node.x <= 0 or node.y >= x_dir_box or node.y <= 0:
+        if node.x >= x_dir_box or node.x <= 0 or node.y >= 100 or node.y <= 0:
             return False
         if self.block[node.x][node.y]:
             return False
