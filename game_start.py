@@ -259,8 +259,8 @@ for row in range(x_dir_box):
         pygame.draw.rect(background, [25, 80, 50], ((row*4, col*4), (4, 4)))
         pygame.draw.rect(background, [0, 0, 0], ((row*4, col*4), (4, 4)), 1)
 
-screen.blit(background, (0, 0))
-pygame.display.update()
+#screen.blit(background, (0, 0))
+#pygame.display.update()
 
 
 
