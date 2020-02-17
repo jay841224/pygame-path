@@ -1,7 +1,7 @@
 import socket
 import _thread
 
-sever = '192.168.11.101'
+sever = '192.168.137.1'
 port = 5555
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
